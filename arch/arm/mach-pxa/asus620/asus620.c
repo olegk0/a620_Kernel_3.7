@@ -57,6 +57,8 @@
 #include <linux/spi/pxa2xx_spi.h>
 #include <linux/i2c/pxa-i2c.h>
 
+#include <asm/setup.h>
+
 #include "../generic.h"
 #include "../devices.h"
 
@@ -85,26 +87,63 @@ static unsigned long asus620_pin_config[] __initdata = {
 	MFP_CFG_IN(GPIO21, AF0),//GPIO21_A620_CF_VS1_N
 	MFP_CFG_IN(GPIO22, AF0),//GPIO22_A620_CF_VS2_N
 */
+/*
+	GPIO48_nPOE,
+	GPIO49_nPWE,
+	GPIO50_nPIOR,
+	GPIO51_nPIOW,
+	GPIO52_nPCE_1,
+	GPIO53_nPCE_2,
+	GPIO55_nPREG,
+	GPIO56_nPWAIT,
+	GPIO57_nIOIS16,
+*/
+
 	/* PWM */
-	GPIO16_PWM0_OUT,//GPIO16_A620_BACKLIGHT
+//	GPIO16_PWM0_OUT,
 
 	/* USB */
 //	MFP_CFG_OUT(GPIO33, AF0, DRIVE_LOW),//GPIO33_A620_nUSB_PULL_UP,
 //	MFP_CFG_IN(GPIO10, AF0),//	GPIO10_A620_nUSB_DETECT,
 
 	/* IrDA */
-	GPIO46_FICP_RXD,
-	GPIO47_FICP_TXD,
+	GPIO46_FICP_RXD,//GPIO46_STUART_RXD
+	GPIO47_FICP_TXD,//GPIO47_STUART_TXD
+
+	/* FFUART */
+//	MFP_CFG_IN(GPIO34, AF0),
+//	MFP_CFG_IN(GPIO39, AF0),
+	GPIO34_FFUART_RXD,
+	GPIO39_FFUART_TXD,
 
         /* BTUART */
-        GPIO42_BTUART_RXD,
+/*        GPIO42_BTUART_RXD,
 	GPIO43_BTUART_TXD,
         GPIO44_BTUART_CTS,
 	GPIO45_BTUART_RTS,
-
+*/
 	/* LCD */
 //	MFP_CFG_OUT(GPIO75, AF0, DRIVE_LOW),//	pxa_gpio_mode (GPIO75_A620_TCON_EN|GPIO_OUT);
-
+/*	GPIO58_LCD_LDD_0,
+	GPIO59_LCD_LDD_1,
+	GPIO60_LCD_LDD_2,
+	GPIO61_LCD_LDD_3,
+	GPIO62_LCD_LDD_4,
+	GPIO63_LCD_LDD_5,
+	GPIO64_LCD_LDD_6,
+	GPIO65_LCD_LDD_7,
+	GPIO66_LCD_LDD_8,
+	GPIO67_LCD_LDD_9,
+	GPIO68_LCD_LDD_10,
+	GPIO69_LCD_LDD_11,
+	GPIO70_LCD_LDD_12,
+	GPIO71_LCD_LDD_13,
+	GPIO72_LCD_LDD_14,
+	GPIO73_LCD_LDD_15,
+	MFP_CFG_OUT(GPIO75, AF0, DRIVE_LOW),//GPIO75_LCD_LCLK
+	GPIO76_LCD_PCLK,
+	GPIO77_LCD_BIAS,
+*/
 	/* GPIO KEYS */
 	MFP_CFG_IN(GPIO41,AF0),//_A620_JOY_SW_N,
 	MFP_CFG_IN(GPIO40,AF0),//_A620_JOY_SE_N,
@@ -118,13 +157,26 @@ static unsigned long asus620_pin_config[] __initdata = {
 	MFP_CFG_IN(GPIO4,AF0),//_A620_CONTACTS_BUTTON_N,
 	MFP_CFG_IN(GPIO5,AF0),//_A620_TASKS_BUTTON_N,
 	MFP_CFG_IN(GPIO11,AF0),//_A620_RECORD_BUTTON_N,
-
 	GPIO0_GPIO | WAKEUP_ON_EDGE_BOTH,
+//	GPIO1_RST,
 
 	/* MISC */
 //	MFP_CFG_OUT(GPIO54, AF0, DRIVE_HIGH),//_A620_LED_ENABLE,??
 //	GPIO12_A620_HEARPHONE_N,
+/*	GPIO80_nCS_4,
 	MFP_CFG_IN(GPIO20,AF0),//_A620_AC_IN
+	MFP_CFG_OUT(GPIO13, AF0, DRIVE_LOW),
+	MFP_CFG_OUT(GPIO14, AF0, DRIVE_LOW),
+	MFP_CFG_OUT(GPIO17, AF0, DRIVE_LOW),
+	MFP_CFG_OUT(GPIO19, AF0, DRIVE_LOW),
+	MFP_CFG_OUT(GPIO28, AF0, DRIVE_LOW),
+	MFP_CFG_OUT(GPIO30, AF0, DRIVE_LOW),
+	MFP_CFG_OUT(GPIO31, AF0, DRIVE_LOW),
+	MFP_CFG_OUT(GPIO32, AF0, DRIVE_LOW),
+	MFP_CFG_OUT(GPIO54, AF0, DRIVE_LOW),
+	MFP_CFG_OUT(GPIO78, AF0, DRIVE_LOW),
+	MFP_CFG_OUT(GPIO79, AF0, DRIVE_LOW),
+*/
 
 	/* I2S */
 	GPIO28_I2S_BITCLK_OUT,
@@ -754,9 +806,19 @@ static struct platform_device *devices[] __initdata = {
 //	&a620_bt_pwr_device,
 	&asus620_gpio_vbus,
 };
+/*
+static unsigned long asus620_ffuart_conf[] __initdata = {
 
+	// FFUART 
+	GPIO34_FFUART_RXD,
+	GPIO39_FFUART_TXD,
+
+};
+*/
 static void __init asus620_init(void)
 {
+//    static char cmd_line[COMMAND_LINE_SIZE];
+
     printk("A620 init\n");
 
     GPDR0 = 0xD38B6000;
@@ -775,11 +837,16 @@ static void __init asus620_init(void)
     GAFR2_U = 0x00000002;
 
 
-
     pxa_register_device(&pxa_device_gpio, NULL);
     pxa2xx_mfp_config(ARRAY_AND_SIZE(asus620_pin_config));
     asus620_gpo_init();
 
+/*    strlcpy(cmd_line, boot_command_line, COMMAND_LINE_SIZE);
+    if(strcmp(cmd_line,"console=ttyS0")){
+	pxa2xx_mfp_config(ARRAY_AND_SIZE(asus620_ffuart_conf));
+        pxa_set_ffuart_info(NULL);
+    }
+*/
     pxa_set_ffuart_info(NULL);
     pxa_set_btuart_info(NULL);
     pxa_set_stuart_info(NULL);
@@ -790,10 +857,7 @@ static void __init asus620_init(void)
 
     pxa_set_ficp_info(&asus620_ficp_platform_data);
 
-
-
 //asus620_gpo_set(GPO_A620_BLUE_LED);
-
 
 //    pxa27x_set_i2c_power_info(NULL);
     pxa_set_i2c_info(NULL);

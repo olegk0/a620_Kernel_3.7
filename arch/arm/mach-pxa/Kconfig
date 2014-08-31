@@ -302,14 +302,7 @@ config MACH_H2200
 	  iPAQ h2200 has 64MB RAM and 32MB flash and QVGA touchscreen.
 	  Originally was shipped with Windows CE 4.2.
 
-config MACH_A620
-	bool "Enable support for ASUS MyPal a620"
-	select PXA25x
-	select HAVE_PWM
-	help
-	  Say Y here if you want to enable support for a620 device.
-	  ASUS MyPal a620 has 64MB RAM and 32MB flash and QVGA touchscreen.
-	  Originally was shipped with Windows CE.
+source "arch/arm/mach-pxa/asus620/Kconfig"
 
 config MACH_H4700
 	bool "HP iPAQ hx4700"

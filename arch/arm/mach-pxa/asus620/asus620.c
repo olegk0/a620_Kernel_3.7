@@ -649,6 +649,7 @@ static struct platform_device a620_bt_pwr_device = {
  *****************************************************/
 
 // DoC
+/*
 static struct resource mtd_resources[]=
 {
     [0] = {
@@ -665,24 +666,24 @@ static struct platform_device mtd_device =
     .resource      = mtd_resources,
     .num_resources = ARRAY_SIZE(mtd_resources),
 };
-
+*/
 /*****************************************************
  *
  * Additional IO mapping
  *
  *****************************************************/
-
+/*
 static struct map_desc doc_io_desc[] __initdata = {
-    { 0xef800000, 0x00000000, 0x00002000, MT_DEVICE }, /* DiskOnChip Millenium + */
+    { 0xef800000, 0x00000000, 0x00002000, MT_DEVICE }, // DiskOnChip Millenium +
 };
 
 static void __init asus620_map_io(void)
 {
 //    pxa_map_io();
     pxa25x_map_io();
-    iotable_init(doc_io_desc,ARRAY_SIZE(doc_io_desc));
+//    iotable_init(doc_io_desc,ARRAY_SIZE(doc_io_desc));
 }
-
+*/
 /******************************************************************************
  * PM.
  ******************************************************************************/
@@ -799,7 +800,7 @@ static struct platform_device *devices[] __initdata = {
 	&asus620_backlight,
 	&power_supply,
 	&asus620_pcmcia_device,
-	&mtd_device,
+//	&mtd_device,
 	&audio,
 	&a620_leds_device,
 	&a620_ts_device,
@@ -818,8 +819,9 @@ static unsigned long asus620_ffuart_conf[] __initdata = {
 static void __init asus620_init(void)
 {
 //    static char cmd_line[COMMAND_LINE_SIZE];
-
+//    void *adr1 = (void *)0xEF800000;
     printk("A620 init\n");
+//    printk("DoC addr:%X",virt_to_phys(adr1));
 
     GPDR0 = 0xD38B6000;
     GPDR1 = 0xFCFFA881;
@@ -895,8 +897,8 @@ MACHINE_START(A620, "ASUS a620")
 
 
 	.atag_offset	= 0x100,
-//	.map_io		= pxa25x_map_io,
-	.map_io  	= asus620_map_io,
+	.map_io		= pxa25x_map_io,
+//	.map_io  	= asus620_map_io,
 	.nr_irqs	= PXA_NR_IRQS,
 	.init_irq	= pxa25x_init_irq,
 	.handle_irq	= pxa25x_handle_irq,

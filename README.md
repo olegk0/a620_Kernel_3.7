@@ -1,6 +1,9 @@
 Kernel 3.7 for ASUS MyPal a620
 
-https://drive.google.com/file/d/0B6QRwjacGTzCWVNKNmZXZm50Rnc/edit?usp=sharing
+Proj folder
+https://drive.google.com/folderview?id=0B6QRwjacGTzCZ2NEcFAwOTF6TEU&usp=sharing
+
+
 
 Linux loader for win mobile 2003
 
